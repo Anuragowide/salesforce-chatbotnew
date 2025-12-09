@@ -1,0 +1,85 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0">
+    <html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Salesforce Chatbot</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                overflow: hidden;
+            }
+            #chatbot-container {
+                height: 100%;
+                width: 100%;
+                border: none;
+                display: block;
+            }
+            .loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                width: 100%;
+                background: #f8fafc;
+                font-family: sans-serif;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="loading">Loading Chatbot...</div>
+        
+        <iframe 
+            id="chatbot-container"
+            src="https://salesforce-chatbotnew.vercel.app"
+            title="Salesforce Chatbot"
+            allow="microphone; camera"
+            style="display:none;"
+            onload="document.querySelector('.loading').style.display='none'; this.style.display='block';"
+        ></iframe>
+        
+        <script>
+            // Communication between Salesforce and iFrame
+            window.addEventListener('message', function(event) {
+                // Validate origin for security
+                if (event.origin !== 'https://salesforce-chatbotnew.vercel.app') {
+                    console.warn('Message from unauthorized origin:', event.origin);
+                    return;
+                }
+                
+                // Handle messages from the chatbot
+                console.log('Message from chatbot:', event.data);
+                
+                // You can use Salesforce APIs here
+                // Example: sforce.apex.execute() or REST API calls
+                
+                if (event.data.type === 'CHATBOT_READY') {
+                    console.log('Chatbot loaded successfully');
+                    // Send user info to chatbot if needed
+                    var chatbotFrame = document.getElementById('chatbot-container');
+                    chatbotFrame.contentWindow.postMessage({
+                        type: 'SALESFORCE_DATA',
+                        user: '{!$User.FirstName} {!$User.LastName}',
+                        userId: '{!$User.Id}',
+                        orgId: '{!$Organization.Id}'
+                    }, 'https://salesforce-chatbotnew.vercel.app');
+                }
+            });
+            
+            // Send ready signal when page loads
+            window.addEventListener('load', function() {
+                var chatbotFrame = document.getElementById('chatbot-container');
+                chatbotFrame.contentWindow.postMessage({
+                    type: 'SALESFORCE_LOADED',
+                    timestamp: new Date().toISOString()
+                }, 'https://salesforce-chatbotnew.vercel.app');
+            });
+        </script>
+    </body>
+    </html>
+</apex:page>
