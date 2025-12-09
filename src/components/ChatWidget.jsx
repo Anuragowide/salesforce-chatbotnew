@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Send, MessageCircle, X, Minimize2, Maximize2 } from 'lucide-react'
 
 export default function ChatWidget() {
@@ -16,6 +16,10 @@ export default function ChatWidget() {
   ])
   const [inputText, setInputText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+
+  useEffect(() => {
+    console.log('ChatWidget mounted and rendering')
+  }, [])
 
   const handleSend = async () => {
     if (!inputText.trim()) return
