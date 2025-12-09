@@ -54,7 +54,7 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-6 right-6 z-50 font-sans" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999 }}>
       {/* Chat Window */}
       {isOpen && !isMinimized && (
         <div className="absolute bottom-24 right-0 w-96 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
